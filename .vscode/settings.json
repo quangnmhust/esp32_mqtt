@@ -1,0 +1,13 @@
+{
+    "idf.adapterTargetName": "esp32",
+    "files.associations": {
+        "mqtt_client.h": "c",
+        "gpio.h": "c",
+        "time.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "span": "c",
+        "randomdata.h": "c"
+    }
+}

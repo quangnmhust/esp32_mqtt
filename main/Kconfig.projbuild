@@ -1,0 +1,84 @@
+menu "Program Configuration"
+
+    config WIFI_SSID
+        string "WiFi SSID"
+        default "myssid"
+        help
+            SSID (network name) for the program to connect to.
+
+    config WIFI_PASS
+        string "WiFi Password"
+        default "mypassword"
+        help
+            WiFi password (WPA or WPA2) for the program to use.
+
+    config MQTT_BROKER_URL
+        string "MQTT Broker URL"
+        default "mybrokerurl"
+        help
+            Mqtt broker URL for the program to use.
+
+    config MQTT_BROKER_USER
+        string "MQTT Broker USER"
+        default "admin"
+        help
+            Mqtt broker URL for the program to use.
+
+    config MQTT_BROKER_PASS
+        string "MQTT Broker PASS"
+        default "123"
+        help
+            Mqtt broker URL for the program to use.
+
+    config  MQTT_PUB_DEV1_TEMP
+        string "MQTT Topic 1"
+        default "data/esp32_1/temp"
+        help
+            Mqtt temperature topic URL for the program to use.
+    config  MQTT_PUB_DEV1_DO
+        string "MQTT Topic 1"
+        default "data/esp32_1/DO"
+        help
+            Mqtt temperature topic URL for the program to use.
+    config  MQTT_PUB_DEV1_PH
+        string "MQTT Topic 1"
+        default "data/esp32_1/pH"
+        help
+            Mqtt temperature topic URL for the program to use.
+    config  MQTT_PUB_DEV1_EC
+        string "MQTT Topic 1"
+        default "data/esp32_1/EC"
+        help
+            Mqtt temperature topic URL for the program to use.
+
+    config  MQTT_PUB_DEV2
+        string "MQTT Topic2"
+        default "data/esp32_2/temp"
+        help
+            Mqtt humidity topic URL for the program to use.
+
+    config TXD_PIN_1
+        int "UART TX Pin 1"
+        default 1
+        help
+            Pin for the UART to use.
+
+    config RXD_PIN_1
+        int "UART RX Pin 1"
+        default 3
+        help
+            Pin for the UART to use.
+
+    config TXD_PIN_2
+        int "UART TX Pin 2"
+        default 17
+        help
+            Pin for the UART to use.
+
+    config RXD_PIN_2
+        int "UART RX Pin 2"
+        default 16
+        help
+            Pin for the UART to use.
+
+endmenu
