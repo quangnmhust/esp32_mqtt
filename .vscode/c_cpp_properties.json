@@ -3,8 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "D:/Espressif/**",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "D:/Espressif/**"
             ],
             "defines": [
                 "_DEBUG",

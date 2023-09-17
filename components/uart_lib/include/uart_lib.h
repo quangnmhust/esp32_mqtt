@@ -16,8 +16,6 @@ typedef struct {
 		int lenth;
 } SensorData;
 
-void encodeDataToHex( int id, int pbgt,float ec, float od, float ph, float teamp, int year ,int mon ,int mday ,int hour ,int min ,int sec , char *hexString);
+void encodeDataToHex( int id, int pbgt, int lenth, float ec, float od, float ph, float teamp, int year ,int mon ,int mday ,int hour ,int minz ,int sec , char *hexString);
 
 void decodeHexToData(const char *hexString, size_t hexStringLen, SensorData *data);
-
-void GPIO_SET_UART();

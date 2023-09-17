@@ -226,19 +226,19 @@ void LORA_task(void *pvParameter){
     sensor_data.teamp = 30.21;
     char hex_data[101];   // 97 =  12 biến * 8(bytes) + 1 NULL
 
-    encodeDataToHex( sensor_data.id, sensor_data.pbgt, sensor_data.lenth, sensor_data.ec, sensor_data.od, sensor_data.ph, sensor_data.teamp,sensor_data.year, sensor_data.mon,sensor_data.mday, sensor_data.hour, sensor_data.min, sensor_data.sec , hex_data);
+    encodeDataToHex( sensor_data.id, sensor_data.pbgt, sensor_data.lenth, sensor_data.ec, sensor_data.od, sensor_data.ph, sensor_data.teamp,sensor_data.year, sensor_data.mon,sensor_data.mday, sensor_data.hour, sensor_data.minz, sensor_data.sec , hex_data);
 
     while(1){
 
-    uint8_t data[128];
+    uint8_t data_[128];
 
-    int length_1 = uart_read_bytes(MY_UART_NUM_1, data, sizeof(data), 20 / portTICK_PERIOD_MS);
+    int length_1 = uart_read_bytes(MY_UART_NUM_1, data_, sizeof(data_), 20 / portTICK_PERIOD_MS);
         if (length_1 > 0)
         {
             uart_write_bytes(MY_UART_NUM_2,  hex_data, strlen(hex_data) );
         }
 
-    int length = uart_read_bytes(MY_UART_NUM_2,  data, sizeof(data), 20 / portTICK_PERIOD_MS );
+    int length = uart_read_bytes(MY_UART_NUM_2,  data_, sizeof(data_), 20 / portTICK_PERIOD_MS );
         if (length > 0)
         {   
             xEventGroupSetBits(event_group_bits, UART_CONNECTED_BIT);
@@ -259,10 +259,9 @@ void LORA_task(void *pvParameter){
      /*
         nhận data rồi enqueue vào Queue MQTT
      */
-    raw_package XData1 = {
-        .data_raw = data,
-        .data_len = length
-        };
+    raw_package XData1;
+    memcpy(XData1.data_raw, data_, sizeof(data_));
+    XData1.data_len=length;
 
     enqueue(&QueueMQTT, XData1);
     ESP_LOGI(TAG, "Data enqueue successful");
@@ -294,9 +293,6 @@ void MQTT_task(void *pvParameter)
         
         ESP_LOGI(TAG, "Reading Data\n");
 
-        char hex_data[101];
-        uint8_t temp1[128];
-
         raw_package temp = dequeue(&QueueMQTT);
 
         decodeHexToData((const char *)temp.data_raw, temp.data_len, &sensor_data);
@@ -317,11 +313,11 @@ void MQTT_task(void *pvParameter)
 
             switch(sensor_data.pbgt) {
                 case 1:
-                    ESP_LOGI(TAG, "Time: %s%s%s %s:%s:%s", sensor_data.mday, sensor_data.mon, sensor_data.year, sensor_data.hour, sensor_data.minz, sensor_data.sec);
-                    ESP_LOGI(TAG, "Temp1 %s", sensor_data.teamp);
-                    ESP_LOGI(TAG, "DO %s", sensor_data.od);
-                    ESP_LOGI(TAG, "pH %s", sensor_data.ph);
-                    ESP_LOGI(TAG, "EC %s", sensor_data.ec);
+                    // ESP_LOGI(TAG, "Time: %s%s%s %s:%s:%s", sensor_data.mday, sensor_data.mon, sensor_data.year, sensor_data.hour, sensor_data.minz, sensor_data.sec);
+                    ESP_LOGI(TAG, "Temp1 %s", tem);
+                    ESP_LOGI(TAG, "DO %s", DO);
+                    ESP_LOGI(TAG, "pH %s", pH);
+                    ESP_LOGI(TAG, "EC %s", EC);
 
                     esp_mqtt_client_publish(mqtt_client, MQTT_PUB_DEV1_TEMP, tem, 0, 0, 0);
                     ESP_LOGI(TAG, "sent publish successful temp");
@@ -335,7 +331,7 @@ void MQTT_task(void *pvParameter)
                     break;
 
                 case 2:
-                    ESP_LOGI(TAG, "Time: %s%s%s %s:%s:%s", sensor_data.mday, sensor_data.mon, sensor_data.year, sensor_data.hour, sensor_data.minz, sensor_data.sec);
+                    // ESP_LOGI(TAG, "Time: %s%s%s %s:%s:%s", sensor_data.mday, sensor_data.mon, sensor_data.year, sensor_data.hour, sensor_data.minz, sensor_data.sec);
                     ESP_LOGI(TAG, "Temp2 %s", tem);
 
                     int msg_id2 = esp_mqtt_client_publish(mqtt_client, MQTT_PUB_DEV2, tem, 0, 0, 0);
@@ -364,7 +360,10 @@ void app_main()
     vTaskDelay( 1000 / portTICK_RATE_MS );
     event_group_bits = xEventGroupCreate();
     init_uart();
-    GPIO_SET_UART();
+    gpio_set_direction(M0, GPIO_MODE_OUTPUT);
+    gpio_set_direction(M1, GPIO_MODE_OUTPUT);
+    gpio_set_level(M0, 0);
+    gpio_set_level(M1, 0);
     wifi_init();
     mqtt_app_start();
     xTaskCreate( &LORA_task, "LORA_task", 2048, NULL, 1, NULL);

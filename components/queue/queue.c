@@ -2,31 +2,22 @@
 
 static const char* TAG = "Queue";
 
-void Init(Queue* Q)
+void Init(Queue_* Q)
 {
     Q->Front = NULL;
     Q->Rear = NULL;
 }
 
-int Isempty(Queue Q)
+int Isempty(Queue_ Q)
 {
     return Q.Front == NULL;
 }
 
-static package DataNull = {
-        .start_bit = 0x02,
-        .device_ID = 0x00,
-        .package_version = 0x01,
-        .timestamp = 0,
-        .data_length = 0,
-        .data[0] = 0,
-        .data[1] = 0,
-        .data[2] = 0,
-        .data[3] = 0,
-        .stop_bit = 0x03
+static raw_package DataNull = {
+        .data_len=0
     };
 
-void enqueue(Queue* Q, package x)
+void enqueue(Queue_* Q, raw_package x)
 {
     //Tao mot node moi
     Node* P = (Node*)malloc(sizeof(Node));
@@ -46,13 +37,13 @@ void enqueue(Queue* Q, package x)
     }
 }
 
-raw_package dequeue(Queue* Q) {
+raw_package dequeue(Queue_* Q) {
     if (Isempty(*Q)) {
         return DataNull;
     }
 
     Node* temp = Q->Front;
-    package data = temp->Data;
+    raw_package data = temp->Data;
     Q->Front = Q->Front->Next;
 
     if (Q->Front == NULL) {
